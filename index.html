@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BayTorch AI | Advanced Interface</title>
+  <script src="https://js.puter.com/v2/"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --bg-dark: #0d1117;
+      --card-light: #f8f9fa;
+      --card-dark: #161b22;
+      --text-light: #1e1e1e;
+      --text-dark: #f0f6fc;
+      --accent: #FF9000; /* Orange */
+      --accent-hover: #FFA500; /* Brighter orange */
+      --user-bubble: #FF9000; /* Orange */
+      --ai-bubble-light: #f0f2f5;
+      --ai-bubble-dark: #21262d;
+      --border-light: #e1e4e8;
+      --border-dark: #30363d;
+      --success: #00C853; /* Green */
+      --warning: #d29922;
+      --error: #f85149;
+      --radius: 16px;
+      --transition: all 0.3s ease;
+      --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.12);
+      --gradient-orange: linear-gradient(135deg, #FF9000, #FFD700); /* Orange to yellow gradient */
+      --dark-grey: #1a1a1a; /* Dark grey */
+    }
+
+    [data-theme="light"] {
+      --bg: var(--bg-light);
+      --card: var(--card-light);
+      --text: var(--text-light);
+      --border: var(--border-light);
+      --ai-bubble: var(--ai-bubble-light);
+    }
+
+    [data-theme="dark"] {
+      --bg: var(--bg-dark);
+      --card: var(--card-dark);
+      --text: var(--text-dark);
+      --border: var(--border-dark);
+      --ai-bubble: var(--ai-bubble-dark);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: var(--transition);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    /* Navigation */
+    nav {
+      background: var(--card);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: var(--dark-grey); /* Dark grey background */
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 26px;
+      transition: transform 0.4s ease;
+    }
+
+    .logo:hover i {
+      transform: rotate(15deg);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      background: var(--border);
+    }
+
+    .nav-link.active {
+      background: var(--accent);
+      color: var(--dark-grey);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    .user-email {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .signout-btn {
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .signout-btn:hover {
+      background: #00943d;
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 22px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(15deg);
+      background: var(--border);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Page container */
+    .page-container {
+      display: none;
+      flex: 1;
+      padding: 40px 0;
+    }
+
+    .page-container.active {
+      display: block;
+    }
+
+    /* Auth Pages */
+    .auth-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 30px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+
+    .auth-title {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      background: var(--gradient-orange);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-input {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 144, 0, 0.15);
+    }
+
+    .auth-btn {
+      background: var(--gradient-orange);
+      color: var(--dark-grey);
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .auth-btn:hover {
+      background: linear-gradient(135deg, #FFA500, #FFE600);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(255, 165, 0, 0.2);
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .auth-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .social-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      background: var(--border);
+    }
+
+    /* Verification Section */
+    .verification-section {
+      display: none;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 25px;
+      margin-top: 25px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verification-title {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    .verification-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .verification-input {
+      width: 50px;
+      height: 60px;
+      text-align: center;
+      font-size: 24px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .verification-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 144, 0, 0.15);
+    }
+
+    /* About Page */
+    .about-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .about-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .about-title {
+      font-size: 36px;
+      margin-bottom: 15px;
+      background: var(--gradient-orange);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-subtitle {
+      font-size: 18px;
+      opacity: 0.8;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 144, 0, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon i {
+      font-size: 24px;
+      color: var(--accent);
+    }
+
+    .feature-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .team-section {
+      margin: 60px 0;
+    }
+
+    .section-title {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 40px;
+      background: var(--gradient-orange);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .team-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 25px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .team-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark-grey);
+      font-size: 40px;
+    }
+
+    .team-name {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .team-role {
+      color: var(--accent);
+      margin-bottom: 15px;
+    }
+
+    /* Chat Page */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 30px;
+      padding: 30px 0;
+      flex: 1;
+    }
+
+    @media (max-width: 900px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chat-container {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--dark-grey);
+    }
+
+    .chat-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-title i {
+      color: var(--accent);
+    }
+
+    .search-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--border);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .search-toggle:hover {
+      background: var(--accent);
+      color: var(--dark-grey);
+      transform: translateY(-2px);
+    }
+
+    .search-toggle.active {
+      background: var(--accent);
+      color: var(--dark-grey);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: var(--bg);
+    }
+
+    .message {
+      display: flex;
+      gap: 16px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .user-avatar {
+      background: var(--gradient-orange);
+      color: var(--dark-grey);
+    }
+
+    .ai-avatar {
+      background: linear-gradient(135deg, #00C853, #007E33); /* Green gradient */
+      color: white;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
+    }
+
+    .message-content {
+      flex: 1;
+    }
+
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: var(--accent);
+      opacity: 0.8;
+    }
+
+    .message-text {
+      background: var(--ai-bubble);
+      padding: 16px;
+      border-radius: 0 var(--radius) var(--radius) var(--radius);
+      white-space: pre-wrap;
+      line-height: 1.7;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .message-text:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .user .message-text {
+      background: var(--user-bubble);
+      color: var(--dark-grey);
+      border-radius: var(--radius) var(--radius) 0 var(--radius);
+    }
+
+    .message-image {
+      max-width: 100%;
+      border-radius: var(--radius);
+      margin-top: 10px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+
+    .message-image:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .input-container {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      position: relative;
+      background: var(--card);
+    }
+
+    .message-input {
+      width: 100%;
+      padding: 16px 70px 16px 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 16px;
+      resize: none;
+      min-height: 60px;
+      max-height: 150px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      outline: none;
+    }
+
+    .message-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 144, 0, 0.15);
+    }
+
+    .send-button {
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      background: var(--accent);
+      color: var(--dark-grey);
+      border: none;
+      border-radius: 50%;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 18px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .send-button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+    }
+
+    .send-button:disabled {
+      background: var(--border);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .sidebar-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .sidebar-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title i {
+      color: var(--accent);
+    }
+
+    .model-info {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 15px;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .model-info:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+
+    .model-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .model-name i {
+      color: var(--accent);
+    }
+
+    .model-desc {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .example-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .example-question {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .example-question:hover {
+      background: var(--accent);
+      color: var(--dark-grey);
+      border-color: var(--accent);
+      transform: translateX(5px);
+    }
+
+    .history-item {
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .history-item:hover {
+      background: var(--border);
+      transform: translateX(3px);
+    }
+
+    .clear-history {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 0;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .clear-history:hover {
+      opacity: 0.8;
+      transform: translateX(3px);
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 6px;
+      padding: 16px;
+      background: var(--ai-bubble);
+      border-radius: 0 var(--radius) var(--radius) var(--radius);
+      width: fit-content;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    .web-results {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .result-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--accent);
+    }
+
+    .result-link {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+      display: block;
+      word-break: break-all;
+    }
+
+    .result-snippet {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .info-text {
+      text-align: center;
+      padding: 30px 20px;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    .powered-by {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      opacity: 0.7;
+      border-top: 1px solid var(--border);
+    }
+
+    .model-tag {
+      display: inline-block;
+      background: rgba(255, 144, 0, 0.15);
+      color: var(--accent);
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-left: 8px;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: var(--radius);
+      background: var(--dark-grey);
+      color: white;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast i {
+      font-size: 20px;
+    }
+
+    .toast.success i {
+      color: var(--success);
+    }
+
+    .toast.error i {
+      color: var(--error);
+    }
+
+    .toast.info i {
+      color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      .main-content {
+        padding: 20px 0;
+        gap: 20px;
+      }
+      
+      .chat-container {
+        height: 65vh;
+      }
+      
+      .message-input {
+        padding: 14px 60px 14px 16px;
+      }
+      
+      .send-button {
+        right: 20px;
+        bottom: 25px;
+        width: 42px;
+        height: 42px;
+      }
+      
+      .logo span {
+        font-size: 20px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .verification-input {
+        width: 40px;
+        height: 50px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo" data-page="chat">
+        <i class="fas fa-fire"></i>
+        <span>BayTorch</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" class="nav-link" data-page="chat">Chat</a>
+        <a href="#" class="nav-link" data-page="about">About</a>
+        <a href="#" class="nav-link" data-page="signin" id="signin-link">Sign In</a>
+        <div class="user-info" id="user-info" style="display: none;">
+          <span class="user-email" id="user-email">user@example.com</span>
+          <button class="signout-btn" id="signout-btn">Sign Out</button>
+        </div>
+      </div>
+      <button class="theme-toggle" id="theme-toggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Sign-in Page -->
+  <div id="signin-page" class="page-container">
+    <div class="container">
+      <div class="auth-container">
+        <h2 class="auth-title">Sign In to BayTorch AI</h2>
+        <form class="auth-form" id="signin-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="signin-email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="signin-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="auth-btn">Sign In</button>
+        </form>
+        
+        <div class="social-login">
+          <div class="social-divider">
+            <div class="divider-line"></div>
+            <span>Or continue with</span>
+            <div class="divider-line"></div>
+          </div>
+          
+          <button class="social-btn">
+            <i class="fab fa-google"></i>
+            Google
+          </button>
+          <button class="social-btn">
+            <i class="fab fa-github"></i>
+            GitHub
+          </button>
+          <button class="social-btn">
+            <i class="fab fa-microsoft"></i>
+            Microsoft
+          </button>
+        </div>
+        
+        <div class="auth-footer">
+          <p>Don't have an account? <a href="#" class="auth-link" id="switch-to-signup">Sign Up</a></p>
+          <p><a href="#" class="auth-link" data-page="chat" id="guest-link">Continue as Guest</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign-up Page -->
+  <div id="signup-page" class="page-container">
+    <div class="container">
+      <div class="auth-container">
+        <h2 class="auth-title">Create BayTorch Account</h2>
+        <form class="auth-form" id="signup-form">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" id="signup-name" placeholder="Your name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="signup-password" placeholder="••••••••" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-input" id="signup-confirm-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="auth-btn">Create Account</button>
+        </form>
+        
+        <div class="verification-section" id="verification-section">
+          <h3 class="verification-title">Verify Your Email</h3>
+          <p style="text-align: center; margin-bottom: 20px;">We've sent a 4-digit verification code to your email address.</p>
+          
+          <div class="verification-inputs">
+            <input type="text" class="verification-input" id="code1" maxlength="1" data-next="code2">
+            <input type="text" class="verification-input" id="code2" maxlength="1" data-prev="code1" data-next="code3">
+            <input type="text" class="verification-input" id="code3" maxlength="1" data-prev="code2" data-next="code4">
+            <input type="text" class="verification-input" id="code4" maxlength="1" data-prev="code3">
+          </div>
+          
+          <button class="auth-btn" id="verify-code-btn">Verify Code</button>
+          <p style="text-align: center; margin-top: 15px;">
+            <a href="#" id="resend-code-link">Resend Code</a>
+          </p>
+        </div>
+        
+        <div class="auth-footer">
+          <p>Already have an account? <a href="#" class="auth-link" id="switch-to-signin">Sign In</a></p>
+          <p><a href="#" class="auth-link" data-page="chat" id="guest-link-2">Continue as Guest</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Page -->
+  <div id="about-page" class="page-container">
+    <div class="container">
+      <div class="about-container">
+        <div class="about-header">
+          <h1 class="about-title">About BayTorch AI</h1>
+          <p class="about-subtitle">Illuminating the future of artificial intelligence with cutting-edge technology and intuitive design</p>
+        </div>
+        
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h3 class="feature-title">Advanced AI Models</h3>
+            <p>Access state-of-the-art AI models including GPT-4o, O1-mini, and O3-mini for various tasks from casual conversation to complex problem solving.</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <h3 class="feature-title">DALL·E Image Generation</h3>
+            <p>Create stunning visual art from text descriptions with our integrated DALL·E implementation, bringing your imagination to life.</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3 class="feature-title">Real-time Web Search</h3>
+            <p>Get up-to-date information with our integrated web search capability that fetches and summarizes the latest information from across the internet.</p>
+          </div>
+        </div>
+        
+        <div class="team-section">
+          <h2 class="section-title">Our Team</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="team-name">Lakshya Prajapati</h3>
+              <p class="team-role">Lead AI Researcher and Developer</p>
+              <p>6+ years of experience in Web development</p>
+            </div> 
+            
+            <div class="team-card">
+              <div class="team-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="team-name">Nishtha Prajapati</h3>
+              <p class="team-role">UI/UX Designer</p>
+              <p>Specialized in creating intuitive web interfaces</p>
+            </div>
+            
+            <div class="team-card">
+              <div class="team-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="team-name">Mamata Prajapati</h3>
+              <p class="team-role">Project Reviewer</p>
+              <p>Ensures quality and timely Releases of the AI products</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="feature-card">
+          <h2 class="feature-title">Our Mission</h2>
+          <p>At BayTorch AI, we're dedicated to making advanced artificial intelligence accessible to everyone. We believe that AI should be a tool that empowers creativity, enhances productivity, and solves real-world problems.</p>
+          <p>Our platform combines the latest advancements in language models with an intuitive interface, enabling users to harness the power of AI without technical expertise.</p>
+          <p>Whether you're a student, professional, or creative individual, BayTorch AI provides the tools you need to bring your ideas to life.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Page -->
+  <div id="chat-page" class="page-container active">
+    <div class="container">
+      <div class="main-content">
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="chat-title">
+              <i class="fas fa-comments"></i>
+              <span>BayTorch Assistant</span>
+            </div>
+            <div class="search-toggle" id="web-search-toggle">
+              <i class="fas fa-search"></i>
+              <span>Web Search</span>
+            </div>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="info-text">
+              <p>Welcome to BayTorch AI Assistant! Ask anything or try an example question.</p>
+              <p>Toggle web search for up-to-date information.</p>
+            </div>
+            <div class="message ai">
+              <div class="avatar ai-avatar">
+                <i class="fas fa-fire"></i>
+              </div>
+              <div class="message-content">
+                <div class="message-header">
+                  <span class="message-sender">BayTorch</span>
+                  <span class="message-time">12:45 PM</span>
+                </div>
+                <div class="message-text">
+                  Hello! I'm BayTorch, your AI assistant. How can I help you today?
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="input-container">
+            <textarea 
+              class="message-input" 
+              id="message-input" 
+              placeholder="Message BayTorch assistant..." 
+              rows="1"
+            ></textarea>
+            <button class="send-button" id="send-button">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <div class="sidebar-card">
+            <h3 class="card-title">
+              <i class="fas fa-brain"></i>
+              AI Models
+            </h3>
+            <div class="model-info" data-model="gpt-4o">
+              <div class="model-name">
+                <i class="fas fa-crown"></i>
+                GPT-4o (Smartest)
+                <span class="model-tag">Recommended</span>
+              </div>
+              <div class="model-desc">Our most advanced model for complex reasoning and creativity.</div>
+            </div>
+            <div class="model-info" data-model="O1-mini">
+              <div class="model-name">
+                <i class="fas fa-gem"></i>
+                O1-mini
+              </div>
+              <div class="model-desc">Balanced model for everyday tasks with good reasoning.</div>
+            </div>
+            <div class="model-info" data-model="O3-mini">
+              <div class="model-name">
+                <i class="fas fa-bolt"></i>
+                O3-mini
+              </div>
+              <div class="model-desc">Fast and efficient for quick responses and simple tasks.</div>
+            </div>
+            <div class="model-info" data-model="dall-e">
+              <div class="model-name">
+                <i class="fas fa-palette"></i>
+                DALL·E
+              </div>
+              <div class="model-desc">Create images from text descriptions with AI-powered art generation.</div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3 class="card-title">
+              <i class="fas fa-lightbulb"></i>
+              Example Questions
+            </h3>
+            <div class="example-questions">
+              <div class="example-question" data-question="Explain quantum computing in simple terms">
+                Explain quantum computing in simple terms
+              </div>
+              <div class="example-question" data-question="What's the latest news about AI advancements?">
+                What's the latest news about AI advancements?
+              </div>
+              <div class="example-question" data-question="Generate an image of a futuristic city on Mars">
+                Generate an image of a futuristic city on Mars
+              </div>
+              <div class="example-question" data-question="How do I make a delicious chocolate cake?">
+                How do I make a delicious chocolate cake?
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3 class="card-title">
+              <i class="fas fa-history"></i>
+              Chat History
+            </h3>
+            <div id="chat-history">
+              <div class="history-item">
+                <i class="fas fa-comments"></i>
+                <span>Quantum computing explanation</span>
+              </div>
+              <div class="history-item">
+                <i class="fas fa-comments"></i>
+                <span>Latest AI advancements</span>
+              </div>
+              <div class="history-item">
+                <i class="fas fa-comments"></i>
+                <span>Chocolate cake recipe</span>
+              </div>
+            </div>
+            <button class="clear-history" id="clear-history">
+              <i class="fas fa-trash-alt"></i>
+              Clear History
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="powered-by">
+        Powered by <strong>BayTorch AI</strong> • Unlimited GPT-4o and DALL·E access
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <script>
+    // DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const themeToggle = document.getElementById('theme-toggle');
+    const webSearchToggle = document.getElementById('web-search-toggle');
+    const chatHistory = document.getElementById('chat-history');
+    const clearHistoryButton = document.getElementById('clear-history');
+    const exampleQuestions = document.querySelectorAll('.example-question');
+    const pageContainers = document.querySelectorAll('.page-container');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const switchToSignup = document.getElementById('switch-to-signup');
+    const switchToSignin = document.getElementById('switch-to-signin');
+    const signinPage = document.getElementById('signin-page');
+    const signupPage = document.getElementById('signup-page');
+    const userInfo = document.getElementById('user-info');
+    const userEmail = document.getElementById('user-email');
+    const signoutBtn = document.getElementById('signout-btn');
+    const verificationSection = document.getElementById('verification-section');
+    const verifyCodeBtn = document.getElementById('verify-code-btn');
+    const resendCodeLink = document.getElementById('resend-code-link');
+    const guestLink = document.getElementById('guest-link');
+    const guestLink2 = document.getElementById('guest-link-2');
+    const toastContainer = document.getElementById('toast-container');
+    const modelCards = document.querySelectorAll('.model-info');
+    const codeInputs = document.querySelectorAll('.verification-input');
+
+    // State Management
+    let isWebSearchEnabled = false;
+    let isProcessing = false;
+    let currentModel = 'gpt-4o';
+    const chatHistoryStore = [];
+    let currentPage = 'chat';
+    let currentUser = null;
+    let pendingVerificationEmail = null;
+    let verificationCode = null;
+
+    // Theme Management
+    function initializeTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.body.setAttribute('data-theme', savedTheme);
+      themeToggle.querySelector('i').className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      themeToggle.querySelector('i').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    });
+
+    // Toast Notification System
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        <span>${message}</span>
+      `;
+      toastContainer.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    localStorage.clear('users')
+    // User Management
+    function initializeUsers() {
+      if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([]));
+        
+      }
+    }
+
+    // Generate a 4-digit verification code
+    function generateVerificationCode() {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    }
+
+    // Simulate sending verification email
+    function sendVerificationEmail(email, code) {
+      // In a real app, this would be sent to the user's email
+      console.log(`Verification code sent to ${email}: ${code}`);
+      showToast(`Verification code sent to ${email}: ${code}`, 'info');
+    }
+
+    function registerUser(name, email, password) {
+      const users = JSON.parse(localStorage.getItem('users'));
+      const userExists = users.some(user => user.email === email);
+      
+      if (userExists) {
+        showToast('User with this email already exists', 'error');
+        return false;
+      }
+      
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password,
+        verified: false,
+        createdAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      // Generate and send verification code
+      verificationCode = generateVerificationCode();
+      pendingVerificationEmail = email;
+      sendVerificationEmail(email, verificationCode);
+      
+      // Show verification section
+      verificationSection.style.display = 'block';
+      showToast(`A 4-digit verification code has been sent to ${email}`, 'info');
+      
+      return true;
+    }
+
+    function authenticateUser(email, password) {
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(user => user.email === email && user.password === password);
+      
+      if (!user) {
+        showToast('Invalid email or password', 'error');
+        return null;
+      }
+      
+      if (!user.verified) {
+        showToast('Please verify your email first', 'error');
+        return null;
+      }
+      
+      return user;
+    }
+
+    function setCurrentUser(user) {
+      currentUser = user;
+      if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        userInfo.style.display = 'flex';
+        userEmail.textContent = user.email;
+        document.getElementById('signin-link').style.display = 'none';
+        
+        // Clear chat for new user session
+        chatMessages.innerHTML = `
+          <div class="info-text">
+            <p>Welcome to BayTorch AI Assistant! Ask anything or try an example question.</p>
+            <p>Toggle web search for up-to-date information.</p>
+          </div>
+          <div class="message ai">
+            <div class="avatar ai-avatar">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-sender">BayTorch</span>
+                <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <div class="message-text">
+                Hello ${user.name}! I'm BayTorch, your AI assistant. How can I help you today?
+              </div>
+            </div>
+          </div>
+        `;
+        
+        navigateToPage('chat');
+      } else {
+        localStorage.removeItem('currentUser');
+        userInfo.style.display = 'none';
+        document.getElementById('signin-link').style.display = 'block';
+      }
+    }
+
+    function getCurrentUser() {
+      const user = localStorage.getItem('currentUser');
+      return user ? JSON.parse(user) : null;
+    }
+
+    // Page Navigation
+    function navigateToPage(page) {
+      // Update active state for pages
+      pageContainers.forEach(container => {
+        container.classList.remove('active');
+        if (container.id === `${page}-page`) {
+          container.classList.add('active');
+        }
+      });
+      
+      // Update active state for nav links
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.dataset.page === page) {
+          link.classList.add('active');
+        }
+      });
+      
+      currentPage = page;
+    }
+
+    // Add event listeners for navigation
+    document.querySelectorAll('[data-page]').forEach(element => {
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = element.dataset.page;
+        navigateToPage(page);
+      });
+    });
+
+    // Auth Form Handling
+    signinForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signin-email').value;
+      const password = document.getElementById('signin-password').value;
+      
+      const user = authenticateUser(email, password);
+      if (user) {
+        setCurrentUser(user);
+        showToast(`Welcome back, ${user.name}!`, 'success');
+      }
+    });
+
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
+      
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+      }
+      
+      registerUser(name, email, password);
+    });
+
+    // Verification Code Handling
+    verifyCodeBtn.addEventListener('click', () => {
+      const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+      
+      if (enteredCode.length !== 4) {
+        showToast('Please enter a 4-digit code', 'error');
+        return;
+      }
+      
+      if (enteredCode === verificationCode && pendingVerificationEmail) {
+        const users = JSON.parse(localStorage.getItem('users'));
+        const user = users.find(u => u.email === pendingVerificationEmail);
+        
+        if (user) {
+          user.verified = true;
+          localStorage.setItem('users', JSON.stringify(users));
+          setCurrentUser(user);
+          showToast('Email verified successfully!', 'success');
+          
+          // Reset verification state
+          pendingVerificationEmail = null;
+          verificationCode = null;
+          codeInputs.forEach(input => input.value = '');
+          verificationSection.style.display = 'none';
+        } else {
+          showToast('User not found', 'error');
+        }
+      } else {
+        showToast('Invalid verification code', 'error');
+      }
+    });
+
+    // Resend verification code
+    resendCodeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (pendingVerificationEmail) {
+        verificationCode = generateVerificationCode();
+        sendVerificationEmail(pendingVerificationEmail, verificationCode);
+        showToast('New verification code sent', 'info');
+      }
+    });
+
+    // Verification code input navigation
+    codeInputs.forEach((input, index) => {
+      input.addEventListener('input', function() {
+        if (this.value.length === 1) {
+          const nextId = this.getAttribute('data-next');
+          if (nextId) {
+            document.getElementById(nextId).focus();
+          }
+        }
+      });
+      
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && this.value.length === 0) {
+          const prevId = this.getAttribute('data-prev');
+          if (prevId) {
+            document.getElementById(prevId).focus();
+          }
+        }
+      });
+    });
+
+    // Switch between sign-in and sign-up
+    switchToSignup.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateToPage('signup');
+    });
+
+    switchToSignin.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateToPage('signin');
+    });
+
+    // Sign out
+    signoutBtn.addEventListener('click', () => {
+      setCurrentUser(null);
+      showToast('You have been signed out', 'info');
+      navigateToPage('signin');
+    });
+
+    // Continue as guest
+    guestLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      setCurrentUser(null);
+      navigateToPage('chat');
+      showToast('Continuing as guest user', 'info');
+    });
+
+    guestLink2.addEventListener('click', (e) => {
+      e.preventDefault();
+      setCurrentUser(null);
+      navigateToPage('chat');
+      showToast('Continuing as guest user', 'info');
+    });
+
+    // Model Selection
+    modelCards.forEach(card => {
+      card.addEventListener('click', function() {
+        // Remove selected class from all
+        modelCards.forEach(c => c.classList.remove('selected'));
+        // Add selected class to clicked
+        this.classList.add('selected');
+        currentModel = this.dataset.model;
+        showToast(`Model changed to: ${this.querySelector('.model-name').textContent.trim()}`, 'info');
+      });
+    });
+
+    // Set default model as selected
+    modelCards[0].classList.add('selected');
+
+    // Chat History Management
+    function loadChatHistory() {
+      const savedHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+      chatHistoryStore.push(...savedHistory);
+      updateChatHistoryUI();
+    }
+
+    function saveChatHistory() {
+      localStorage.setItem('chatHistory', JSON.stringify(chatHistoryStore));
+      updateChatHistoryUI();
+    }
+
+    function updateChatHistoryUI() {
+      chatHistory.innerHTML = '';
+      if (chatHistoryStore.length === 0) {
+        chatHistory.innerHTML = `
+          <div class="history-item">
+            <i class="fas fa-comments"></i>
+            <span>No recent chats</span>
+          </div>
+        `;
+        return;
+      }
+      chatHistoryStore.forEach((item, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+          <i class="fas fa-comments"></i>
+          <span>${item.prompt.substring(0, 30)}${item.prompt.length > 30 ? '...' : ''}</span>
+        `;
+        historyItem.addEventListener('click', () => {
+          messageInput.value = item.prompt;
+          handleSend();
+        });
+        chatHistory.appendChild(historyItem);
+      });
+    }
+
+    clearHistoryButton.addEventListener('click', () => {
+      chatHistoryStore.length = 0;
+      localStorage.removeItem('chatHistory');
+      chatMessages.innerHTML = `
+        <div class="info-text">
+          <p>Welcome to BayTorch AI Assistant! Ask anything or try an example question.</p>
+          <p>Toggle web search for up-to-date information.</p>
+        </div>
+      `;
+      updateChatHistoryUI();
+      showToast('Chat history cleared', 'info');
+    });
+
+    // Message Rendering
+    function addMessage(text, type, additionalContent = '') {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      const avatarClass = type === 'user' ? 'user-avatar' : 'ai-avatar';
+      const sender = type === 'user' ? 'You' : 'BayTorch';
+      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      messageDiv.innerHTML = `
+        <div class="avatar ${avatarClass}">
+          <i class="fas ${type === 'user' ? 'fa-user' : 'fa-fire'}"></i>
+        </div>
+        <div class="message-content">
+          <div class="message-header">
+            <span class="message-sender">${sender}</span>
+            <span class="message-time">${timestamp}</span>
+          </div>
+          <div class="message-text">${text}</div>
+          ${additionalContent}
+        </div>
+      `;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'message ai';
+      typingDiv.innerHTML = `
+        <div class="avatar ai-avatar">
+          <i class="fas fa-fire"></i>
+        </div>
+        <div class="message-content">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      `;
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return typingDiv;
+    }
+
+    function removeTypingIndicator() {
+      const typingIndicator = chatMessages.querySelector('.typing-indicator');
+      if (typingIndicator) typingIndicator.closest('.message').remove();
+    }
+
+    // Handle Input
+    function getPrompt() {
+      const prompt = messageInput.value.trim();
+      messageInput.value = '';
+      messageInput.style.height = '60px';
+      return prompt;
+    }
+
+    // API Interactions
+    async function sendChatPrompt(prompt) {
+      const typingIndicator = showTypingIndicator();
+      try {
+        // Using Puter AI for demo purposes
+        const response = await puter.ai.chat(prompt, { model: currentModel });
+        removeTypingIndicator();
+        addMessage(response, 'ai');
+        chatHistoryStore.push({ prompt, response });
+        saveChatHistory();
+      } catch (error) {
+        removeTypingIndicator();
+        addMessage(`❌ Error: ${error.message || 'Failed to get response.'}`, 'ai');
+      }
+    }
+
+    async function sendImagePrompt(prompt) {
+      const typingIndicator = showTypingIndicator();
+      try {
+        const imageElement = await puter.ai.txt2img(prompt);
+        removeTypingIndicator();
+        const imageUrl = imageElement.src;
+        const imageContent = `<img src="${imageUrl}" class="message-image" alt="Generated Image">`;
+        addMessage('Here is your generated image:', 'ai', imageContent);
+        chatHistoryStore.push({ prompt, response: '[Image Generated]' });
+        saveChatHistory();
+      } catch (error) {
+        removeTypingIndicator();
+        addMessage(`❌ Error: Failed to generate image. ${error.message}`, 'ai');
+      }
+    }
+
+    async function sendSearchPrompt(prompt) {
+      const typingIndicator = showTypingIndicator();
+      try {
+        const result = await puter.ai.search(prompt);
+        removeTypingIndicator();
+        const webResults = result.results ? result.results.map(r => `
+          <div class="web-results">
+            <div class="result-title"><i class="fas fa-link"></i>${r.title}</div>
+            <a href="${r.url}" class="result-link" target="_blank">${r.url}</a>
+            <div class="result-snippet">${r.snippet || 'No snippet available'}</div>
+          </div>
+        `).join('') : '';
+        addMessage(result.summary || result.text || 'No summary found.', 'ai', webResults);
+        chatHistoryStore.push({ prompt, response: result.summary || result.text });
+        saveChatHistory();
+      } catch (error) {
+        removeTypingIndicator();
+        addMessage(`❌ Error: Web search failed. ${error.message}`, 'ai');
+      }
+    }
+
+    async function handleSend() {
+      if (isProcessing) return;
+      const prompt = getPrompt();
+      if (!prompt) return;
+
+      isProcessing = true;
+      sendButton.disabled = true;
+      addMessage(prompt, 'user');
+
+      if (currentModel === 'dall-e') {
+        await sendImagePrompt(prompt);
+      } else if (isWebSearchEnabled) {
+        await sendSearchPrompt(prompt);
+      } else {
+        await sendChatPrompt(prompt);
+      }
+
+      isProcessing = false;
+      sendButton.disabled = false;
+    }
+
+    // Event Listeners
+    sendButton.addEventListener('click', handleSend);
+    messageInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+
+    messageInput.addEventListener('input', () => {
+      messageInput.style.height = '60px';
+      messageInput.style.height = `${Math.min(messageInput.scrollHeight, 150)}px`;
+    });
+
+    webSearchToggle.addEventListener('click', () => {
+      isWebSearchEnabled = !isWebSearchEnabled;
+      webSearchToggle.classList.toggle('active', isWebSearchEnabled);
+      showToast(`Web search ${isWebSearchEnabled ? 'enabled' : 'disabled'}`, 'info');
+    });
+
+    exampleQuestions.forEach(question => {
+      question.addEventListener('click', () => {
+        messageInput.value = question.dataset.question;
+        handleSend();
+      });
+    });
+
+    // Initialize
+    function initializeApp() {
+      initializeTheme();
+      initializeUsers();
+      
+      const user = getCurrentUser();
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        navigateToPage('signin');
+      }
+      
+      loadChatHistory();
+    }
+    initializeApp();
+
+    console.log(verificationCode)
+  </script>
+</body>
+</html>
